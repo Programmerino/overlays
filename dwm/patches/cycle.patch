@@ -1,0 +1,85 @@
+--- a/config.def.h
++++ b/config.def.h
+@@ -111,6 +111,10 @@
+ 	{ MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h"} },
+ 	{ MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h"} },
+ 	{ MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h"} },
++	{ MODKEY,                       XK_Prior,  cycle,          {.i = -1 } },
++	{ MODKEY,                       XK_Next,   cycle,          {.i = +1 } },
++	{ MODKEY|ShiftMask,             XK_Prior,  tagcycle,       {.i = -1 } },
++	{ MODKEY|ShiftMask,             XK_Next,   tagcycle,       {.i = +1 } },
+ };
+ 
+ /* button definitions */
+--- a/dwm.c
++++ b/dwm.c
+@@ -181,6 +181,7 @@
+ static void configurenotify(XEvent *e);
+ static void configurerequest(XEvent *e);
+ static Monitor *createmon(void);
++static void cycle(const Arg *arg);
+ static void destroynotify(XEvent *e);
+ static void detach(Client *c);
+ static void detachstack(Client *c);
+@@ -232,6 +233,7 @@
+ static void setlayout(const Arg *arg);
+ static void setmfact(const Arg *arg);
+ static void setup(void);
++static int shifttag(int dist);
+ static void seturgent(Client *c, int urg);
+ static void showhide(Client *c);
+ static void sigchld(int unused);
+@@ -239,6 +241,7 @@
+ static Monitor *systraytomon(Monitor *m);
+ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
++static void tagcycle(const Arg *arg);
+ static void tile(Monitor *);
+ static void togglebar(const Arg *arg);
+ static void togglefloating(const Arg *arg);
+@@ -733,6 +736,13 @@
+ }
+ 
+ void
++cycle(const Arg *arg)
++{
++	const Arg a = { .i = shifttag(arg->i) };
++	view(&a);
++}
++
++void
+ destroynotify(XEvent *e)
+ {
+ 	Client *c;
+@@ -1799,6 +1809,17 @@
+ 	XFree(wmh);
+ }
+ 
++int
++shifttag(int dist) {
++	int seltags = selmon->tagset[selmon->seltags] & TAGMASK;
++
++	if(dist > 0) /* left circular shift */
++		seltags = (seltags << dist) | (seltags >> (LENGTH(tags) - dist));
++	else /* right circular shift */
++		seltags = (seltags >> (- dist)) | (seltags << (LENGTH(tags) + dist));
++	return seltags;
++}
++
+ void
+ showhide(Client *c)
+ {
+@@ -1862,6 +1883,13 @@
+ }
+ 
+ void
++tagcycle(const Arg *arg) {
++	const Arg a = { .i = shifttag(arg->i) };
++	tag(&a);
++	view(&a);
++}
++
++void
+ tile(Monitor *m)
+ {
+ 	unsigned int i, n, h, mw, my, ty;

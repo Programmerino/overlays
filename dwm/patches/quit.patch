@@ -1,0 +1,57 @@
+--- a/config.def.h
++++ b/config.def.h
+@@ -103,7 +103,6 @@
+ 	TAGKEYS(                        XK_7,                      6)
+ 	TAGKEYS(                        XK_8,                      7)
+ 	TAGKEYS(                        XK_9,                      8)
+-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+ 	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h"} },
+ 	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h"} },
+ 	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h"} },
+--- a/dwm.c
++++ b/dwm.c
+@@ -237,6 +237,7 @@
+ static void seturgent(Client *c, int urg);
+ static void showhide(Client *c);
+ static void sigchld(int unused);
++static void sigterm(int unused);
+ static void spawn(const Arg *arg);
+ static Monitor *systraytomon(Monitor *m);
+ static void tag(const Arg *arg);
+@@ -1727,6 +1728,9 @@
+ 	/* clean up any zombies immediately */
+ 	sigchld(0);
+ 
++	if (signal(SIGTERM, sigterm) == SIG_ERR)
++		die("can't install SIGTERM handler:");
++
+ 	/* init screen */
+ 	screen = DefaultScreen(dpy);
+ 	sw = DisplayWidth(dpy, screen);
+@@ -1849,6 +1853,12 @@
+ }
+ 
+ void
++sigterm(int unused)
++{
++	quit(NULL);
++}
++
++void
+ spawn(const Arg *arg)
+ {
+ 	if (arg->v == dmenucmd)
+@@ -2518,8 +2528,12 @@
+ {
+ 	if (argc == 2 && !strcmp("-v", argv[1]))
+ 		die("dwm-"VERSION);
++	if (argc == 2 && !strcmp("-q", argv[1])) {
++		execlp("@psmisc@killall", "killall", "dwm", (char *)NULL);
++		exit(EXIT_SUCCESS);
++	}
+ 	else if (argc != 1)
+-		die("usage: dwm [-v]");
++		die("usage: dwm [-qv]");
+ 	if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
+ 		fputs("warning: no locale support\n", stderr);
+ 	if (!(dpy = XOpenDisplay(NULL)))

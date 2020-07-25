@@ -1,0 +1,40 @@
+--- a/config.def.h
++++ b/config.def.h
+@@ -10,7 +10,9 @@
+ static const int showbar            = 1;        /* 0 means no bar */
+ static const int topbar             = 1;        /* 0 means bottom bar */
+ static const int viewontag          = 1;        /* switch view on tag switch */
+-static const char *fonts[]          = { "monospace:size=10" };
++static const char *fonts[]          = {
++	"Ionicons:size=10"
++};
+ static const char dmenufont[]       = "monospace:size=10";
+ static const char col_gray1[]       = "#222222";
+ static const char col_gray2[]       = "#444444";
+--- a/dwm.c
++++ b/dwm.c
+@@ -792,6 +792,8 @@
+ 	int boxs = drw->fonts->h / 9;
+ 	int boxw = drw->fonts->h / 6 + 2;
+ 	unsigned int i, occ = 0, urg = 0;
++	int scheme_num = SchemeNorm;
++	static const char *tagsymbols[] = { "\uf1f7", "\uf1f6" };
+ 	Client *c;
+ 
+ 	if(showsystray && m == systraytomon(m))
+@@ -813,12 +815,9 @@
+ 	x = 0;
+ 	for (i = 0; i < LENGTH(tags); i++) {
+ 		w = TEXTW(tags[i]);
+-		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+-		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+-		if (occ & 1 << i)
+-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
+-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+-				urg & 1 << i);
++		scheme_num = m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm;
++		drw_setscheme(drw, scheme[scheme_num]);
++		drw_text(drw, x, 0, w, bh, lrpad / 2, (occ & 1 << i) ? tagsymbols[0] : tagsymbols[1], urg & 1 << i);
+ 		x += w;
+ 	}
+ 

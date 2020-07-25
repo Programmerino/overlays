@@ -1,0 +1,181 @@
+--- a/config.def.h
++++ b/config.def.h
+@@ -11,22 +11,24 @@ static const int showbar            = 1;
+ static const int topbar             = 1;        /* 0 means bottom bar */
+ static const int viewontag          = 1;        /* switch view on tag switch */
+ static const char *fonts[]          = {
++	"Terminus:size=8",
++	"Siji:size=10",
+ 	"Ionicons:size=10"
+ };
+ static const char dmenufont[]       = "monospace:size=10";
+-static const char col_gray1[]       = "#222222";
+-static const char col_gray2[]       = "#444444";
+-static const char col_gray3[]       = "#bbbbbb";
+-static const char col_gray4[]       = "#eeeeee";
+-static const char col_cyan[]        = "#005577";
++static const char col_gray1[]       = "#2f343f";
++static const char col_gray2[]       = "#a6a6a6";
++static const char col_gray3[]       = "#a6a6a6";
++static const char col_gray4[]       = "#e5e9f0";
++static const char col_cyan[]        = "#e5e9f0";
+ static const char *colors[][3]      = {
+ 	/*               fg         bg         border   */
+ 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
+-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
++	[SchemeSel]  = { col_gray4, col_gray1, col_cyan  },
+ };
+ 
+ /* tagging */
+-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
++static const char *tags[] = { "1", "2", "3", "4", "5" };
+ 
+ static const Rule rules[] = {
+ 	/* xprop(1):
+@@ -34,8 +36,7 @@ static const Rule rules[] = {
+ 	 *	WM_NAME(STRING) = title
+ 	 */
+ 	/* class      instance    title       tags mask     isfloating   monitor */
+-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
++	{ NULL },
+ };
+ 
+ /* layout(s) */
+@@ -45,13 +46,11 @@ static const int resizehints = 1;    /*
+ 
+ static const Layout layouts[] = {
+ 	/* symbol     arrange function */
+-	{ "[]=",      tile },    /* first entry is default */
+ 	{ "><>",      NULL },    /* no layout function means floating behavior */
+-	{ "[M]",      monocle },
+ };
+ 
+ /* key definitions */
+-#define MODKEY Mod1Mask
++#define MODKEY Mod4Mask
+ #define TAGKEYS(KEY,TAG) \
+ 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
+ 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
+@@ -63,8 +62,9 @@ static const Layout layouts[] = {
+ 
+ /* commands */
+ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+-static const char *termcmd[]  = { "st", NULL };
++static const char *altdmenucmd[] = { "@dmenu@dmenu_run", "-m", dmenumon, NULL };
++static const char *dmenucmd[] = { "@j4_dmenu_desktop@j4-dmenu-desktop", "--no-generic", "--term=x-terminal-emulator", NULL };
++static const char *termcmd[]  = { "@alacritty@alacritty", "-e", "tmux", NULL };
+ 
+ #include "moveresize.c"
+ #include "maximize.c"
+@@ -72,6 +72,7 @@ static const char *termcmd[]  = { "st",
+ static Key keys[] = {
+ 	/* modifier                     key        function        argument */
+ 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
++	{ MODKEY|ShiftMask,             XK_p,      spawn,          {.v = altdmenucmd } },
+ 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+ 	{ MODKEY,                       XK_b,      togglebar,      {0} },
+ 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
+@@ -83,9 +84,6 @@ static Key keys[] = {
+ 	{ MODKEY,                       XK_Return, zoom,           {0} },
+ 	{ MODKEY,                       XK_Tab,    view,           {0} },
+ 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+ 	{ MODKEY,                       XK_space,  setlayout,      {0} },
+ 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+ 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+@@ -99,10 +97,6 @@ static Key keys[] = {
+ 	TAGKEYS(                        XK_3,                      2)
+ 	TAGKEYS(                        XK_4,                      3)
+ 	TAGKEYS(                        XK_5,                      4)
+-	TAGKEYS(                        XK_6,                      5)
+-	TAGKEYS(                        XK_7,                      6)
+-	TAGKEYS(                        XK_8,                      7)
+-	TAGKEYS(                        XK_9,                      8)
+ 	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h"} },
+ 	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h"} },
+ 	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h"} },
+@@ -123,7 +117,6 @@ static Key keys[] = {
+ static Button buttons[] = {
+ 	/* click                event mask      button          function        argument */
+ 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
+-	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+ 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
+ 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+ 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
+--- a/dwm.c
++++ b/dwm.c
+@@ -207,7 +207,6 @@ static void killclient(const Arg *arg);
+ static void manage(Window w, XWindowAttributes *wa);
+ static void mappingnotify(XEvent *e);
+ static void maprequest(XEvent *e);
+-static void monocle(Monitor *m);
+ static void motionnotify(XEvent *e);
+ static void movemouse(const Arg *arg);
+ static Client *nexttiled(Client *c);
+@@ -243,7 +242,6 @@ static Monitor *systraytomon(Monitor *m)
+ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
+ static void tagcycle(const Arg *arg);
+-static void tile(Monitor *);
+ static void togglebar(const Arg *arg);
+ static void togglefloating(const Arg *arg);
+ static void toggletag(const Arg *arg);
+@@ -1233,21 +1231,6 @@ maprequest(XEvent *e)
+ }
+ 
+ void
+-monocle(Monitor *m)
+-{
+-	unsigned int n = 0;
+-	Client *c;
+-
+-	for (c = m->clients; c; c = c->next)
+-		if (ISVISIBLE(c))
+-			n++;
+-	if (n > 0) /* override layout symbol */
+-		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
+-	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
+-		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
+-}
+-
+-void
+ motionnotify(XEvent *e)
+ {
+ 	static Monitor *mon = NULL;
+@@ -1902,32 +1885,6 @@ tagcycle(const Arg *arg) {
+ }
+ 
+ void
+-tile(Monitor *m)
+-{
+-	unsigned int i, n, h, mw, my, ty;
+-	Client *c;
+-
+-	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+-	if (n == 0)
+-		return;
+-
+-	if (n > m->nmaster)
+-		mw = m->nmaster ? m->ww * m->mfact : 0;
+-	else
+-		mw = m->ww;
+-	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+-		if (i < m->nmaster) {
+-			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+-			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
+-			my += HEIGHT(c);
+-		} else {
+-			h = (m->wh - ty) / (n - i);
+-			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
+-			ty += HEIGHT(c);
+-		}
+-}
+-
+-void
+ togglebar(const Arg *arg)
+ {
+ 	selmon->showbar = !selmon->showbar;

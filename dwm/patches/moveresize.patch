@@ -1,0 +1,92 @@
+--- a/config.def.h
++++ b/config.def.h
+@@ -59,6 +59,8 @@ static char dmenumon[2] = "0"; /* compon
+ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+ static const char *termcmd[]  = { "st", NULL };
+ 
++#include "moveresize.c"
++
+ static Key keys[] = {
+ 	/* modifier                     key        function        argument */
+ 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+@@ -94,6 +96,14 @@ static Key keys[] = {
+ 	TAGKEYS(                        XK_8,                      7)
+ 	TAGKEYS(                        XK_9,                      8)
+ 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
++	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h"} },
++	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h"} },
++	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h"} },
++	{ MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h"} },
++	{ MODKEY|ShiftMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h"} },
++	{ MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h"} },
++	{ MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h"} },
++	{ MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h"} },
+ };
+ 
+ /* button definitions */
+--- /dev/null
++++ b/moveresize.c
+@@ -0,0 +1,63 @@
++void
++moveresize(const Arg *arg) {
++	/* only floating windows can be moved */
++	Client *c;
++	c = selmon->sel;
++	int x, y, w, h, nx, ny, nw, nh, ox, oy, ow, oh;
++	char xAbs, yAbs, wAbs, hAbs;
++	int msx, msy, dx, dy, nmx, nmy;
++	unsigned int dui;
++	Window dummy;
++
++	if (!c || !arg)
++		return;
++	if (selmon->lt[selmon->sellt]->arrange && !c->isfloating)
++		return;
++	if(sscanf((char *)arg->v, "%d%c %d%c %d%c %d%c", &x, &xAbs, &y, &yAbs, &w, &wAbs, &h, &hAbs) != 8)
++		return;
++	/* compute new window position; prevent window from be positioned outside the current monitor */
++	nw = c->w + w;
++	if(wAbs == 'W')
++		nw = w < selmon->mw - 2 * c->bw ? w : selmon->mw - 2 * c->bw;
++
++	nh = c->h + h;
++	if(hAbs == 'H')
++		nh = h < selmon->mh - 2 * c->bw ? h : selmon->mh - 2 * c->bw;
++
++	nx = c->x + x;
++	if(xAbs == 'X') {
++		if(x < selmon->mx)
++			nx = selmon->mx;
++		else if(x > selmon->mx + selmon->mw)
++			nx = selmon->mx + selmon->mw - nw - 2 * c->bw;
++		else
++			nx = x;
++	}
++
++	ny = c->y + y;
++	if(yAbs == 'Y') {
++		if(y < selmon->my)
++			ny = selmon->my;
++		else if(y > selmon->my + selmon->mh)
++			ny = selmon->my + selmon->mh - nh - 2 * c->bw;
++		else
++			ny = y;
++	}
++
++	ox = c->x;
++	oy = c->y;
++	ow = c->w;
++	oh = c->h;
++
++	XRaiseWindow(dpy, c->win);
++	Bool xqp = XQueryPointer(dpy, root, &dummy, &dummy, &msx, &msy, &dx, &dy, &dui);
++	resize(c, nx, ny, nw, nh, True);
++
++	/* move cursor along with the window to avoid problems caused by the sloppy focus */
++	if (xqp && ox <= msx && (ox + ow) >= msx && oy <= msy && (oy + oh) >= msy)
++	{
++		nmx = c->x - ox + c->w - ow;
++		nmy = c->y - oy + c->h - oh;
++		XWarpPointer(dpy, None, None, 0, 0, 0, 0, nmx, nmy);
++	}
++}

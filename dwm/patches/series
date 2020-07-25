@@ -1,0 +1,12 @@
+centerscreen.patch
+moveresize.patch
+autostart.patch
+systray.patch
+wm_type_dock.patch
+remove_layouts.patch
+viewontag.patch
+circle_tags.patch
+cycle.patch
+maximize.patch
+quit.patch
+personal_config.patch
