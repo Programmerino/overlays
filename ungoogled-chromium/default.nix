@@ -1,5 +1,7 @@
 self: super:
 
+with builtins;
+
 {
-  ungoogled-chromium = super.callPackage ./package (super.config.chromium or {});
+  ${baseNameOf ./.} = super.callPackage ./package (super.config.chromium or {});
 }

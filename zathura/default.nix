@@ -1,7 +1,9 @@
 self: super:
 
+with builtins;
+
 {
-  zathura = super.callPackage <nixpkgs/pkgs/applications/misc/zathura> {
+  ${baseNameOf ./.} = super.callPackage <nixpkgs/pkgs/applications/misc/zathura> {
     useMupdf = true;
   };
 }

@@ -9,7 +9,7 @@ let
   patches = map (x: ./. + "/patches/${x}") patchFiles;
 in
 {
-  dwm = (super.callPackage <nixpkgs/pkgs/applications/window-managers/dwm> {
+  ${baseNameOf ./.} = (super.callPackage <nixpkgs/pkgs/applications/window-managers/dwm> {
     inherit patches;
   }).overrideAttrs (oldAttrs: {
     postPatch = ''
