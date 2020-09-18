@@ -3,5 +3,5 @@ self: super:
 with builtins;
 
 {
-  ${baseNameOf ./.} = super.callPackage (super.path + /. + "/doc") { };
+  ${baseNameOf ./.} = super.callPackage (self.path + /. + "/doc") { };
 }

@@ -8,9 +8,9 @@ with builtins;
     patchFiles = filter (x: ! isList x && x != "") seriesFile;
     patches = map (x: ./. + "/patches/${x}") patchFiles;
   in
-    super.callPackage (super.path + /. + "/pkgs/applications/misc/dmenu") {
+    super.callPackage (self.path + /. + "/pkgs/applications/misc/dmenu") {
       patches = [
-        (super.path + /. + "/pkgs/applications/misc/dmenu/xim.patch")
+        (self.path + /. + "/pkgs/applications/misc/dmenu/xim.patch")
       ] ++ patches;
     };
 }

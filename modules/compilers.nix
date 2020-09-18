@@ -33,7 +33,7 @@ rec {
 
     inherit cc bintools libc extraPackages;
 
-    path = prev.path;
+    path = final.path;
   } // extraArgs; in self);
 
   wrapCC = cc: wrapCCWith {
@@ -51,7 +51,7 @@ rec {
 
     isl = if !final.stdenv.isDarwin then final.isl_0_14 else null;
 
-    path = prev.path;
+    path = final.path;
   }));
 
   gcc9 = prev.lowPrio (wrapCC (prev.callPackage ../nixpkgs/pkgs/development/compilers/gcc/9 {
@@ -67,7 +67,7 @@ rec {
 
       isl = if !final.stdenv.isDarwin then final.isl_0_17 else null;
 
-      path = prev.path;
+      path = final.path;
   }));
 
   gnat = gnat9;
