@@ -35,10 +35,10 @@
 
       packages = forAllSystems (system:
         builtins.listToAttrs (builtins.map (x: { name = x;
-                                                 value = nixpkgsFor.${system}.${x}; }) derivations)
+                                                 value = nixpkgsFor.${system}.pkgs.${x}; }) derivations)
       );
 
-      overlay = builtins.map (x: import (./. + "/${x}")) derivations;
-  
+      overlay = [ (import ./overlays.nix) ];
+
     };
 }
