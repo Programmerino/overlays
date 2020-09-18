@@ -20,7 +20,8 @@
 , langGo
 , langObjC
 , langObjCpp
-}:
+, ...
+}@args:
 
 assert cloog != null -> stdenv.lib.versionOlder version "5";
 assert langJava -> stdenv.lib.versionOlder version "7";
@@ -167,7 +168,7 @@ let
     ++ lib.optional javaAwtGtk "--enable-java-awt=gtk"
     ++ lib.optional (langJava && javaAntlr != null) "--with-antlr-jar=${javaAntlr}"
 
-    ++ (import <nixpkgs/pkgs/development/compilers/gcc/common/platform-flags.nix> { inherit (stdenv) lib targetPlatform; })
+    ++ (import (args.path + /. + "/pkgs/development/compilers/gcc/common/platform-flags.nix") { inherit (stdenv) lib targetPlatform; })
     ++ lib.optionals (targetPlatform != hostPlatform) crossConfigureFlags
     ++ lib.optional (targetPlatform != hostPlatform) "--disable-bootstrap"
 

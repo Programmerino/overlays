@@ -16,7 +16,8 @@
 , isGNU ? false, isClang ? cc.isClang or false, gnugrep ? null
 , buildPackages ? {}
 , libcxx ? null
-}:
+, ...
+}@args:
 
 with stdenvNoCC.lib;
 
@@ -62,7 +63,7 @@ let
 
   expand-response-params =
     if buildPackages.stdenv.hasCC && buildPackages.stdenv.cc != "/dev/null"
-    then import <nixpkgs/pkgs/build-support/expand-response-params> { inherit (buildPackages) stdenv; }
+    then import (args.path + /. + "/pkgs/build-support/expand-response-params") { inherit (buildPackages) stdenv; }
     else "";
 
   # older compilers (for example bootstrap's GCC 5) fail with -march=too-modern-cpu
@@ -134,7 +135,7 @@ stdenv.mkDerivation {
     src=$PWD
   '';
 
-  wrapper = <nixpkgs/pkgs/build-support/cc-wrapper/cc-wrapper.sh>;
+  wrapper = (args.path + /. + "/pkgs/build-support/cc-wrapper/cc-wrapper.sh");
 
   installPhase =
     ''
@@ -226,8 +227,8 @@ stdenv.mkDerivation {
   wrapperName = "CC_WRAPPER";
 
   setupHooks = [
-    <nixpkgs/pkgs/build-support/setup-hooks/role.bash>
-    <nixpkgs/pkgs/build-support/cc-wrapper/setup-hook.sh>
+    (args.path + /. + "/pkgs/build-support/setup-hooks/role.bash")
+    (args.path + /. + "/pkgs/build-support/cc-wrapper/setup-hook.sh")
   ];
 
   postFixup =
@@ -380,8 +381,8 @@ stdenv.mkDerivation {
 
     + ''
       substituteAll ${./add-flags.sh} $out/nix-support/add-flags.sh
-      substituteAll ${<nixpkgs/pkgs/build-support/cc-wrapper/add-hardening.sh>} $out/nix-support/add-hardening.sh
-      substituteAll ${<nixpkgs/pkgs/build-support/wrapper-common/utils.bash>} $out/nix-support/utils.bash
+      substituteAll ${(args.path + /. + "/pkgs/build-support/cc-wrapper/add-hardening.sh")} $out/nix-support/add-hardening.sh
+      substituteAll ${(args.path + /. + "/pkgs/build-support/wrapper-common/utils.bash")} $out/nix-support/utils.bash
 
       ##
       ## Extra custom steps

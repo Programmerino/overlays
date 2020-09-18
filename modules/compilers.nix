@@ -1,6 +1,6 @@
 final: prev:
 
-let
+rec {
   # Taken from <nixpkgs/pkgs/top-level/stage.nix>
   #
   # Non-GNU/Linux OSes are currently "impure" platforms, with their libc
@@ -22,7 +22,7 @@ let
     , extraPackages ? final.stdenv.lib.optional (cc.isGNU or false && final.stdenv.targetPlatform.isMinGW) final.threadsCross
     , ...
     } @ extraArgs:
-      prev.callPackage ./cc-wrapper (let self = {
+      prev.callPackage ../nixpkgs/pkgs/build-support/cc-wrapper (let self = {
     nativeTools = final.stdenv.targetPlatform == final.stdenv.hostPlatform && final.stdenv.cc.nativeTools or false;
     nativeLibc = final.stdenv.targetPlatform == final.stdenv.hostPlatform && final.stdenv.cc.nativeLibc or false;
     nativePrefix = final.stdenv.cc.nativePrefix or "";
@@ -32,13 +32,15 @@ let
     isClang = cc.isClang or false;
 
     inherit cc bintools libc extraPackages;
+
+    path = prev.path;
   } // extraArgs; in self);
 
   wrapCC = cc: wrapCCWith {
     inherit cc;
   };
 
-  gcc6 = prev.lowPrio (wrapCC (prev.callPackage ./gcc/6 {
+  gcc6 = prev.lowPrio (wrapCC (prev.callPackage ../nixpkgs/pkgs/development/compilers/gcc/6 {
     inherit noSysDirs;
 
     # PGO seems to speed up compilation by gcc by ~10%, see #445 discussion
@@ -48,9 +50,11 @@ let
     threadsCross = if final.stdenv.targetPlatform != final.stdenv.buildPlatform then final.threadsCross else null;
 
     isl = if !final.stdenv.isDarwin then final.isl_0_14 else null;
+
+    path = prev.path;
   }));
 
-  gcc9 = prev.lowPrio (wrapCC (prev.callPackage ./gcc/9 {
+  gcc9 = prev.lowPrio (wrapCC (prev.callPackage ../nixpkgs/pkgs/development/compilers/gcc/9 {
       inherit noSysDirs;
 
       # PGO seems to speed up compilation by gcc by ~10%, see #445 discussion
@@ -62,9 +66,10 @@ let
       threadsCross = if final.stdenv.targetPlatform != final.stdenv.buildPlatform then final.threadsCross else null;
 
       isl = if !final.stdenv.isDarwin then final.isl_0_17 else null;
+
+      path = prev.path;
   }));
-in
-rec {
+
   gnat = gnat9;
 
   gnat6 = wrapCC (gcc6.cc.override {
@@ -85,5 +90,5 @@ rec {
     gnatboot = gnat6;
   });
 
-  gnatboot = wrapCC (prev.callPackage ./gnatboot { });
+  gnatboot = wrapCC (prev.callPackage ../nixpkgs/pkgs/development/compilers/gnatboot { });
 }

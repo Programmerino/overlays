@@ -3,7 +3,7 @@ self: super:
 with builtins;
 
 {
-  ${baseNameOf ./.} = super.callPackage <nixpkgs/pkgs/applications/misc/zathura> {
+  ${baseNameOf ./.} = super.callPackage (super.path + /. + "/pkgs/applications/misc/zathura") {
     useMupdf = true;
   };
 }

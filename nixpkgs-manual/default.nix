@@ -3,5 +3,5 @@ self: super:
 with builtins;
 
 {
-  ${baseNameOf ./.} = super.callPackage <nixpkgs/doc> { };
+  ${baseNameOf ./.} = super.callPackage (super.path + /. + "/doc") { };
 }
