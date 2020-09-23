@@ -5,7 +5,7 @@
     with import ./modules/compilers.nix final prev;
 
     {
-      android-udev-rules = (prev.callPackage (prev.path + /. + "/pkgs/os-specific/linux/android-udev-rules") { }).overrideAttrs (oldAttrs: {
+      android-udev-rules = (prev.callPackage (prev.path + "/pkgs/os-specific/linux/android-udev-rules") { }).overrideAttrs (oldAttrs: {
         installPhase = oldAttrs.installPhase + ''
       sed -i \
         -e 's/ATTR{idVendor}=="2b4c", ENV{adb_user}="yes"/&\n\n# Vivo\nATTR{idVendor}=="2d95", ENV{adb_user}="yes"/' \
@@ -14,7 +14,7 @@
       });
 
 
-      conky-nox = prev.callPackage (prev.path + /. + "/pkgs/os-specific/linux/conky") {
+      conky-nox = prev.callPackage (prev.path + "/pkgs/os-specific/linux/conky") {
         x11Support = false;
       };
 
@@ -23,9 +23,9 @@
         patchFiles = builtins.filter (x: ! builtins.isList x && x != "") seriesFile;
         patches = builtins.map (x: ./. + "/dmenu/patches/${x}") patchFiles;
       in
-        prev.callPackage (prev.path + /. + "/pkgs/applications/misc/dmenu") {
+        prev.callPackage (prev.path + "/pkgs/applications/misc/dmenu") {
           patches = [
-            (prev.path + /. + "/pkgs/applications/misc/dmenu/xim.patch")
+            (prev.path + "/pkgs/applications/misc/dmenu/xim.patch")
           ] ++ patches;
         };
 
@@ -33,7 +33,7 @@
         seriesFile = builtins.split "\n" (builtins.readFile ./dwm/patches/series);
         patchFiles = builtins.filter (x: ! builtins.isList x && x != "") seriesFile;
         patches = builtins.map (x: ./. + "/dwm/patches/${x}") patchFiles;
-      in (prev.callPackage (prev.path + /. + "/pkgs/applications/window-managers/dwm") {
+      in (prev.callPackage (prev.path + "/pkgs/applications/window-managers/dwm") {
         inherit patches;
       }).overrideAttrs (oldAttrs: {
         postPatch = ''
@@ -48,11 +48,11 @@
 
       inherit gnat gnat6 gnat9 gnatboot;
 
-      nixpkgs-manual = prev.callPackage (prev.path + /. + "/doc") { };
+      nixpkgs-manual = prev.callPackage (prev.path + "/doc") { };
 
       ungoogled-chromium = prev.callPackage ./ungoogled-chromium/package (prev.config.chromium or {});
 
-      zathura = prev.callPackage (prev.path + /. + "/pkgs/applications/misc/zathura") {
+      zathura = prev.callPackage (prev.path + "/pkgs/applications/misc/zathura") {
         useMupdf = true;
       };
 

@@ -52,17 +52,17 @@ let majorVersion = "9";
     inherit (stdenv) buildPlatform hostPlatform targetPlatform;
 
     patches =
-         optional (targetPlatform != hostPlatform) (args.path + /. + "/pkgs/development/compilers/gcc/libstdc++-target.patch")
-      ++ optional noSysDirs (args.path + /. + "/pkgs/development/compilers/gcc/no-sys-dirs.patch")
+         optional (targetPlatform != hostPlatform) (args.path + "/pkgs/development/compilers/gcc/libstdc++-target.patch")
+      ++ optional noSysDirs (args.path + "/pkgs/development/compilers/gcc/no-sys-dirs.patch")
       /* ++ optional (hostPlatform != buildPlatform) (fetchpatch { # XXX: Refine when this should be applied
         url = "https://git.busybox.net/buildroot/plain/package/gcc/${version}/0900-remove-selftests.patch?id=11271540bfe6adafbc133caf6b5b902a816f5f02";
         sha256 = ""; # TODO: uncomment and check hash when available.
       }) */
       ++ optional langAda ../gnat-cflags.patch
-      ++ optional langFortran (args.path + /. + "/pkgs/development/compilers/gcc/gfortran-driving.patch")
-      ++ optional (targetPlatform.libc == "musl" && targetPlatform.isPower) (args.path + /. + "/pkgs/development/compilers/gcc/ppc-musl.patch")
+      ++ optional langFortran (args.path + "/pkgs/development/compilers/gcc/gfortran-driving.patch")
+      ++ optional (targetPlatform.libc == "musl" && targetPlatform.isPower) (args.path + "/pkgs/development/compilers/gcc/ppc-musl.patch")
       ++ optional (!crossStageStatic && targetPlatform.isMinGW) (fetchpatch {
-        url = "https://raw.githubusercontent.com/lhmouse/MINGW-packages/${import (args.path + /. + "/pkgs/development/compilers/gcc/common/mfcgthreads-patches-repo.nix")}/mingw-w64-gcc-git/9000-gcc-${majorVersion}-branch-Added-mcf-thread-model-support-from-mcfgthread.patch";
+        url = "https://raw.githubusercontent.com/lhmouse/MINGW-packages/${import (args.path + "/pkgs/development/compilers/gcc/common/mfcgthreads-patches-repo.nix")}/mingw-w64-gcc-git/9000-gcc-${majorVersion}-branch-Added-mcf-thread-model-support-from-mcfgthread.patch";
         sha256 = "1in5kvcknlpi9z1vvjw6jfmwy8k12zvbqlqfnq84qpm99r0rh00a";
       });
 
@@ -77,7 +77,7 @@ stdenv.mkDerivation ({
   pname = "${crossNameAddon}${name}${if stripped then "" else "-debug"}";
   inherit version;
 
-  builder = (args.path + /. + "/pkgs/development/compilers/gcc/builder.sh");
+  builder = (args.path + "/pkgs/development/compilers/gcc/builder.sh");
 
   src = fetchurl {
     url = "mirror://gcc/releases/gcc-${version}/gcc-${version}.tar.xz";
@@ -237,7 +237,7 @@ stdenv.mkDerivation ({
   LIBRARY_PATH = optionals (targetPlatform == hostPlatform) (makeLibraryPath (optional (zlib != null) zlib));
 
   inherit
-    (import (args.path + /. + "/pkgs/development/compilers/gcc/common/extra-target-flags.nix") {
+    (import (args.path + "/pkgs/development/compilers/gcc/common/extra-target-flags.nix") {
       inherit stdenv crossStageStatic libcCross threadsCross;
     })
     EXTRA_TARGET_FLAGS

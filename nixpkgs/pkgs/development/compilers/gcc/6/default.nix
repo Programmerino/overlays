@@ -65,14 +65,14 @@ let majorVersion = "6";
     inherit (stdenv) buildPlatform hostPlatform targetPlatform;
 
     patches =
-      [ (args.path + /. + "/pkgs/development/compilers/gcc/use-source-date-epoch.patch") ]
-      ++ optional (targetPlatform != hostPlatform) (args.path + /. + "/pkgs/development/compilers/gcc/libstdc++-target.patch")
-      ++ optional noSysDirs (args.path + /. + "/pkgs/development/compilers/gcc/no-sys-dirs.patch")
+      [ (args.path + "/pkgs/development/compilers/gcc/use-source-date-epoch.patch") ]
+      ++ optional (targetPlatform != hostPlatform) (args.path + "/pkgs/development/compilers/gcc/libstdc++-target.patch")
+      ++ optional noSysDirs (args.path + "/pkgs/development/compilers/gcc/no-sys-dirs.patch")
       ++ optional langAda ../gnat-cflags.patch
-      ++ optional langFortran (args.path + /. + "/pkgs/development/compilers/gcc/gfortran-driving.patch")
-      ++ optional (targetPlatform.libc == "musl") (args.path + /. + "/pkgs/development/compilers/gcc/libgomp-dont-force-initial-exec.patch")
+      ++ optional langFortran (args.path + "/pkgs/development/compilers/gcc/gfortran-driving.patch")
+      ++ optional (targetPlatform.libc == "musl") (args.path + "/pkgs/development/compilers/gcc/libgomp-dont-force-initial-exec.patch")
       ++ optional (!crossStageStatic && targetPlatform.isMinGW) (fetchpatch {
-        url = "https://raw.githubusercontent.com/lhmouse/MINGW-packages/${import (args.path + /. + "/pkgs/development/compilers/gcc/common/mfcgthreads-patches-repo.nix")}/mingw-w64-gcc-git/9000-gcc-${majorVersion}-branch-Added-mcf-thread-model-support-from-mcfgthread.patch";
+        url = "https://raw.githubusercontent.com/lhmouse/MINGW-packages/${import (args.path + "/pkgs/development/compilers/gcc/common/mfcgthreads-patches-repo.nix")}/mingw-w64-gcc-git/9000-gcc-${majorVersion}-branch-Added-mcf-thread-model-support-from-mcfgthread.patch";
         sha256 = "1c449jgm1vx9g4kv82bxmvlgrwb8f6kwkl0gqmjlmhf7f4hjy2nr";
       });
 
@@ -113,7 +113,7 @@ stdenv.mkDerivation ({
   pname = "${crossNameAddon}${name}${if stripped then "" else "-debug"}";
   inherit version;
 
-  builder = (args.path + /. + "/pkgs/development/compilers/gcc/builder.sh");
+  builder = (args.path + "/pkgs/development/compilers/gcc/builder.sh");
 
   src = if stdenv.targetPlatform.isVc4 then fetchFromGitHub {
     owner = "itszor";
@@ -294,7 +294,7 @@ stdenv.mkDerivation ({
   ));
 
   inherit
-    (import (args.path + /. + "/pkgs/development/compilers/gcc/common/extra-target-flags.nix") {
+    (import (args.path + "/pkgs/development/compilers/gcc/common/extra-target-flags.nix") {
       inherit stdenv crossStageStatic libcCross threadsCross;
     })
     EXTRA_TARGET_FLAGS
