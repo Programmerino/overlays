@@ -38,7 +38,7 @@
                                                  value = nixpkgsFor.${system}.pkgs.${x}; }) derivations)
       );
 
-      overlay = [ (import ./overlays.nix) ];
+      overlay = import ./overlays.nix;
 
     };
 }
