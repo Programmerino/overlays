@@ -20,12 +20,7 @@
         "conky-nox"
         "dmenu"
         "dwm"
-        "gnat"
-        "gnat6"
-        "gnat9"
-        "gnatboot"
         "nixpkgs-manual"
-        "ungoogled-chromium"
         "zathura"
       ];
 

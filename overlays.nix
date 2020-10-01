@@ -43,11 +43,7 @@
         '';
       });
 
-      inherit (import ./modules/compilers.nix final prev) gnat gnat6 gnat9 gnatboot;
-
       nixpkgs-manual = prev.callPackage (prev.path + "/doc") { };
-
-      ungoogled-chromium = prev.callPackage ./ungoogled-chromium (prev.config.chromium or {});
 
       zathura = prev.callPackage (prev.path + "/pkgs/applications/misc/zathura") {
         useMupdf = true;
