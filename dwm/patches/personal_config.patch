@@ -64,7 +64,7 @@
 -static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 -static const char *termcmd[]  = { "st", NULL };
 +static const char *altdmenucmd[] = { "@dmenu@dmenu_run", "-m", dmenumon, NULL };
-+static const char *dmenucmd[] = { "@j4_dmenu_desktop@j4-dmenu-desktop", "--no-generic", "--term=x-terminal-emulator", NULL };
++static const char *dmenucmd[] = { "@j4_dmenu_desktop@j4-dmenu-desktop", "--no-generic", "--term=alacritty", NULL };
 +static const char *termcmd[]  = { "@alacritty@alacritty", "-e", "tmux", NULL };
  
  #include "moveresize.c"
