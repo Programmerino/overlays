@@ -20,6 +20,7 @@
         "conky-nox"
         "dmenu"
         "dwm"
+        "libX11"
         "nixpkgs-manual"
         "zathura"
       ];
