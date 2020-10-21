@@ -20,8 +20,9 @@
         "conky-nox"
         "dmenu"
         "dwm"
-        "xorg.libX11"
+        #"xorg.libX11"
         "nixpkgs-manual"
+        #"systemd"
         "zathura"
       ];
 

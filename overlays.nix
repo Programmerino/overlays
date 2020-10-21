@@ -45,15 +45,29 @@
 
       # Fix X11 apps not respecting the cursors.
       # https://github.com/NixOS/nixpkgs/issues/24137
-      xorg = prev.xorg // {
-        libX11 = prev.xorg.libX11.overrideAttrs (oldAttrs: {
-          postPatch = (oldAttrs.postPatch or "") + ''
-            substituteInPlace src/CrGlCur.c --replace "libXcursor.so.1" "${final.xorg.libXcursor}/lib/libXcursor.so.1"
-          '';
-        });
-      };
+      #xorg =
+      #  /*
+      #  prev.xorg.overrideScope' (self: super: {
+      #    libX11 = super.libX11.overrideAttrs (oldAttrs: {
+      #      postPatch = (oldAttrs.postPatch or "") + ''
+      #        substituteInPlace src/CrGlCur.c --replace "libXcursor.so.1" "${self.libXcursor}/lib/libXcursor.so.1"
+      #      '';
+      #    });
+      #  });
+      #  */
+      #  prev.xorg // {
+      #    libX11 = prev.xorg.libX11.overrideAttrs (oldAttrs: {
+      #      postPatch = (oldAttrs.postPatch or "") + ''
+      #        substituteInPlace src/CrGlCur.c --replace "libXcursor.so.1" "${final.xorg.libXcursor}/lib/libXcursor.so.1"
+      #      '';
+      #    });
+      #  };
 
       nixpkgs-manual = prev.callPackage (prev.path + "/doc") { };
+
+      #systemd = prev.systemd.overrideAttrs (oldAttrs: {
+      #  mesonFlags = oldAttrs.mesonFlags ++ [ "-Ddns-servers=''" ];
+      #});
 
       zathura = prev.zathura.override {
         useMupdf = true;
