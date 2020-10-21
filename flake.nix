@@ -21,6 +21,7 @@
         "dmenu"
         "dwm"
         #"xorg.libX11"
+        "nix-index"
         "nixpkgs-manual"
         #"systemd"
         "zathura"

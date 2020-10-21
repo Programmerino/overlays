@@ -63,6 +63,10 @@
       #    });
       #  };
 
+      nix-index = prev.nix-index.override {
+        nix = final.nixFlakes;
+      };
+
       nixpkgs-manual = prev.callPackage (prev.path + "/doc") { };
 
       #systemd = prev.systemd.overrideAttrs (oldAttrs: {
