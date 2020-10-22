@@ -63,6 +63,8 @@
       #    });
       #  };
 
+      microsoft-edge-dev = prev.callPackage ./microsoft-edge-dev { };
+
       nix-index = prev.nix-index.override {
         nix = final.nixFlakes;
       };

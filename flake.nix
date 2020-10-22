@@ -22,6 +22,7 @@
         "dmenu"
         "dwm"
         #"xorg.libX11"
+        "microsoft-edge-dev"
         "nix-index"
         "nixpkgs-manual"
         #"systemd"
