@@ -11,6 +11,7 @@
       nixpkgsFor = forAllSystems (system:
         import nixpkgs {
           inherit system;
+          config = { allowUnfree = true; };
           overlays = self.overlay;
         }
       );
