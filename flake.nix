@@ -1,6 +1,10 @@
 {
   description = "My nix overlays";
 
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/05334ad78526ead39af85f846515606d9f052a11";
+  };
+
   outputs = { self, nixpkgs }:
     let
 
