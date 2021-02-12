@@ -30,6 +30,7 @@
         "nix-index"
         "nixpkgs-manual"
         #"systemd"
+        "ungoogled-chromium"
         "zathura"
       ];
 

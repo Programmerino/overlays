@@ -75,6 +75,10 @@
       #  mesonFlags = oldAttrs.mesonFlags ++ [ "-Ddns-servers=''" ];
       #});
 
+      ungoogled-chromium = prev.ungoogled-chromium.override {
+        enableVaapi = true;
+      };
+
       zathura = prev.zathura.override {
         useMupdf = true;
       };
