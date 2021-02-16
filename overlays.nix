@@ -79,6 +79,17 @@
         enableVaapi = true;
       };
 
+      haskellPackages = prev.haskellPackages.override {
+        overrides = self: super: {
+          xmobar = with prev.haskell.lib;
+            overrideCabal (self.callPackage ./haskell-modules/xmobar.nix {})
+              (drv: { doCheck = false;
+                      configureFlags = [ "-fwith_utf8" "-fwith_rtsopts" "-fwith_weather"
+                                         "-fwith_xft" ];
+                    });
+        };
+      };
+
       zathura = prev.zathura.override {
         useMupdf = true;
       };

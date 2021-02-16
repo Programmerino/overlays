@@ -26,6 +26,7 @@
         "dmenu"
         "dwm"
         #"xorg.libX11"
+        "haskellPackages.xmobar"
         "microsoft-edge-dev"
         "nix-index"
         "nixpkgs-manual"
