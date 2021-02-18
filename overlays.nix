@@ -85,7 +85,7 @@
             overrideCabal (self.callPackage ./haskell-modules/xmobar.nix {})
               (drv: { doCheck = false;
                       configureFlags = [ "-fwith_utf8" "-fwith_rtsopts" "-fwith_weather"
-                                         "-fwith_xft" ];
+                                         "-fwith_xft" "-fwith_xpm" ];
                     });
         };
       };
