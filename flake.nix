@@ -27,6 +27,7 @@
         "dwm"
         #"xorg.libX11"
         "haskellPackages.xmobar"
+        "haskellPackages.termonad"
         "microsoft-edge-dev"
         "nix-index"
         "nixpkgs-manual"
