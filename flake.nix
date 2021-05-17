@@ -25,6 +25,7 @@
         "conky-nox"
         "dmenu"
         "dwm"
+        "gaupol"
         #"xorg.libX11"
         "haskellPackages.xmobar"
         "haskellPackages.termonad"
