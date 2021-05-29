@@ -108,6 +108,28 @@
           };
         }) { };
 
+      haskellPackages = (prev.dontRecurseIntoAttrs prev.haskell.packages.ghc8104).override {
+        overrides = self: super: with prev.haskell.lib; {
+
+          xmobar = overrideCabal super.xmobar
+            (drv: { doCheck = false;
+                    configureFlags = [ "-fwith_utf8" "-fwith_rtsopts" "-fwith_weather"
+                                       "-fwith_xft" "-fwith_xpm" ];
+                  });
+
+          termonad = overrideSrc super.termonad
+            { src = prev.fetchFromGitHub
+              { owner = "zanculmarktum";
+                repo = "termonad";
+                rev = "0f8028d1ce6e978e42bf1f889eca91af3f72746c";
+                sha256 = "sha256-/ingpNbG9dRT3lachfJl/Ynb7tynZbefuO0KJ0UeJao=";
+              };
+              version = "0f8028d";
+            };
+
+        };
+      };
+
       # Fix X11 apps not respecting the cursors.
       # https://github.com/NixOS/nixpkgs/issues/24137
       #xorg =
@@ -142,28 +164,6 @@
 
       ungoogled-chromium = prev.ungoogled-chromium.override {
         enableVaapi = true;
-      };
-
-      haskellPackages = prev.haskellPackages.override {
-        overrides = self: super: with prev.haskell.lib; {
-
-          xmobar = overrideCabal super.xmobar
-            (drv: { doCheck = false;
-                    configureFlags = [ "-fwith_utf8" "-fwith_rtsopts" "-fwith_weather"
-                                       "-fwith_xft" "-fwith_xpm" ];
-                  });
-
-          termonad = overrideSrc super.termonad
-            { src = prev.fetchFromGitHub
-              { owner = "zanculmarktum";
-                repo = "termonad";
-                rev = "0f8028d1ce6e978e42bf1f889eca91af3f72746c";
-                sha256 = "sha256-/ingpNbG9dRT3lachfJl/Ynb7tynZbefuO0KJ0UeJao=";
-              };
-              version = "0f8028d";
-            };
-
-        };
       };
 
       zathura = prev.zathura.override {
