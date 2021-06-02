@@ -2,7 +2,7 @@
   description = "My nix overlays";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/85960bea533dc2d89dff8836d8a0a1239ddd5c9c";
+    nixpkgs.url = "github:NixOS/nixpkgs/5237039cc1e7633a7697ed7999afd1f80d91ff14";
   };
 
   outputs = { self, nixpkgs }:
@@ -33,33 +33,35 @@
         "nix-index"
         "nixpkgs-manual"
         #"systemd"
-        "ungoogled-chromium"
         "zathura"
       ];
 
       lib = nixpkgs.lib;
 
+      attrList = s: builtins.filter (x: ! builtins.isList x) (builtins.split "\\." s);
+
+      fetchAttr = l: set: let
+        attr = builtins.getAttr (builtins.head l) set;
+      in if builtins.tail l == []
+         then attr
+         else fetchAttr (builtins.tail l) attr;
+
+      last = l: if builtins.tail l == []
+                then builtins.head l
+                else last (builtins.tail l);
+
     in {
 
       packages = forAllSystems (system:
         builtins.listToAttrs
-          (builtins.map (x: let list = builtins.filter (x: builtins.typeOf x != "list") (builtins.split "\\." x);
-                                getPackageAttr = s: set:
-                                  let attr = builtins.getAttr (builtins.head s) set;
-                                  in
-                                    if builtins.tail s == []
-                                    then attr
-                                    else getPackageAttr (builtins.tail s) attr;
-                                packageAttr = getPackageAttr list nixpkgsFor.${system}.pkgs;
-                                package = list: if builtins.tail list == []
-                                                then builtins.head list
-                                                else package (builtins.tail list);
-                                package' = package list;
-                            in
-                              if builtins.match ".*\\..*" x != null
-                              then { name = package'; value = packageAttr; }
-                              else { name = x; value = nixpkgsFor.${system}.pkgs.${x}; })
-            derivations)
+          (builtins.map
+            (x: if builtins.match ".*\\..*" x != null
+                then let l = attrList x;
+                     in { name = last l; value = fetchAttr l nixpkgsFor.${system}.pkgs; }
+                else { name = x; value = nixpkgsFor.${system}.pkgs.${x}; })
+            (if system == "aarch64-linux" || system == "i686-linux"
+             then builtins.filter (x: x != "haskellPackages.termonad") derivations
+             else derivations))
       );
 
       overlay = import ./overlays.nix;

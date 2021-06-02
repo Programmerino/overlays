@@ -21,9 +21,7 @@
         patches = builtins.map (x: ./. + "/dmenu/patches/${x}") patchFiles;
       in
         prev.dmenu.override {
-          patches = [
-            (prev.path + "/pkgs/applications/misc/dmenu/xim.patch")
-          ] ++ patches;
+          inherit patches;
         };
 
       dwm = let
@@ -117,15 +115,22 @@
                                        "-fwith_xft" "-fwith_xpm" ];
                   });
 
-          termonad = overrideSrc super.termonad
-            { src = prev.fetchFromGitHub
-              { owner = "zanculmarktum";
-                repo = "termonad";
-                rev = "0f8028d1ce6e978e42bf1f889eca91af3f72746c";
-                sha256 = "sha256-/ingpNbG9dRT3lachfJl/Ynb7tynZbefuO0KJ0UeJao=";
-              };
-              version = "0f8028d";
+          termonad = let
+            rev = "e324a361e40dfbdd87eea43e39a30e09ca058c5f";
+            src = prev.fetchFromGitHub {
+              owner = "zanculmarktum";
+              repo = "termonad";
+              hash = "sha256-eHNkf7sdwisBvaKP6wZd1KLslp8e6Yd65rBuhOI3EgA=";
+              inherit rev;
             };
+          in overrideCabal (super.callCabal2nix
+            "termonad"
+            src
+            { inherit (prev.pkgs) gtk3;
+              inherit (prev.pkgs) pcre2;
+              vte_291 = prev.pkgs.vte;
+            }
+          ) (drv: { version = builtins.substring 0 7 rev; });
 
         };
       };
@@ -161,10 +166,6 @@
       #systemd = prev.systemd.overrideAttrs (oldAttrs: {
       #  mesonFlags = oldAttrs.mesonFlags ++ [ "-Ddns-servers=''" ];
       #});
-
-      ungoogled-chromium = prev.ungoogled-chromium.override {
-        enableVaapi = true;
-      };
 
       zathura = prev.zathura.override {
         useMupdf = true;
