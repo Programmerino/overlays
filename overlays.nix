@@ -106,6 +106,9 @@
           };
         }) { };
 
+      github-linguist = with import ./github-linguist { nixpkgs = prev; };
+        github-linguist;
+
       haskellPackages = (prev.dontRecurseIntoAttrs prev.haskell.packages.ghc8104).override {
         overrides = self: super: with prev.haskell.lib; {
 

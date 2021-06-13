@@ -1,0 +1,2 @@
+nix-shell -p bundler --run 'bundle lock'
+nix-shell -p bundix --run bundix

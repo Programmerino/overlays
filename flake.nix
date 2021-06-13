@@ -26,6 +26,7 @@
         "dmenu"
         "dwm"
         "gaupol"
+        "github-linguist"
         #"xorg.libX11"
         "haskellPackages.xmobar"
         "haskellPackages.termonad"
