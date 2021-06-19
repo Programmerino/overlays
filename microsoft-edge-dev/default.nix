@@ -31,7 +31,7 @@
 
 stdenv.mkDerivation rec {
   pname = "microsoft-edge-dev";
-  version = "88.0.673.0";
+  version = "93.0.916.1";
 
   src = fetchurl {
     url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/microsoft-edge-dev_${version}-1_amd64.deb";
