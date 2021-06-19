@@ -83,7 +83,7 @@ stdenv.mkDerivation rec {
       msedge = lib.makeLibraryPath [
         glibc glib nss nspr atk at_spi2_atk xorg.libX11
         xorg.libxcb cups.lib dbus_libs.lib expat libdrm
-        xorg.libXcomposite xlibs.libxshmfence xorg.libXdamage
+        xorg.libXcomposite xorg.libxshmfence xorg.libXdamage
         xorg.libXext
         xorg.libXfixes xorg.libXrandr libxkbcommon
         gnome3.gtk gnome2.pango cairo gdk-pixbuf mesa
