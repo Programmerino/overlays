@@ -35,7 +35,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/microsoft-edge-dev_${version}-1_amd64.deb";
-    hash = "sha256-/9ACwjK/tU8jZIvVbkvsYMdOrjXBnx5FwV6EoqEU0+E=";
+    hash = "sha256-R3JBa5jX54GWYNH66ZDlm4emWwWUmWMFtpZ1XLc5YnY=";
   };
 
   unpackCmd = ''
